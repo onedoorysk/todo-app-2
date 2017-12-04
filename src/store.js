@@ -1,26 +1,5 @@
-import rootReducer from './reducers/index'
-
-const createStore = (reducer) => {
-  let state
-  let listeners = []
-  
-  const getState = () => state
-  
-  const dispatch = action => {
-    state = reducer(state, action)
-    listeners.forEach(listener => listener())
-  }
-  
-  const subscribe = listener => {
-    listeners.push(listener)
-    return () => {
-      listeners.filter(l => l !== listener)
-    }
-  }
-  dispatch({})
-  
-  return {getState, dispatch, subscribe}
-}
+import rootReducer from './reducers/'
+import {createStore, applyMiddleware} from 'redux'
 
 const addLoggingToDispatch = (store) => (rawDispatch) => (action) => {
 
@@ -42,14 +21,8 @@ const addPromiseSupportToDispatch = (store) => (rawDispatch) => (action) => {
   }
 }
 
-const wrapDispatchWithMiddlewares = (store, middlewares) => {
-  middlewares.slice().reverse().forEach(middleware => 
-    store.dispatch = middleware(store)(store.dispatch)
-  )
-}
-
 const middlewares = [addLoggingToDispatch, addPromiseSupportToDispatch]
 
-const store = createStore(rootReducer)
-wrapDispatchWithMiddlewares(store, middlewares)
+const store = createStore(rootReducer, applyMiddleware(...middlewares))
+
 export default store
