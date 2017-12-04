@@ -21,7 +21,10 @@ const addPromiseSupportToDispatch = (store) => (rawDispatch) => (action) => {
   }
 }
 
-const middlewares = [addLoggingToDispatch, addPromiseSupportToDispatch]
+const thunk = (store) => (next) => (action) =>
+  typeof action === 'function' ? action(store.dispatch) : next(action)
+
+const middlewares = [thunk, addPromiseSupportToDispatch, addLoggingToDispatch]
 
 const store = createStore(rootReducer, applyMiddleware(...middlewares))
 
