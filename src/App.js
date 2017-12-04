@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import MyForm from './components/MyForm'
 import TodoList from './components/TodoList'
 import ToggleButton from './components/ToggleButton'
@@ -7,7 +7,6 @@ import {currentAction} from './actions/index'
 
 const App = () => {
   const tasks = store.getState().tasks
-  console.log(tasks)
   const current = store.getState().current
   return (
     <div>
