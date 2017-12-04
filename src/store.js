@@ -35,6 +35,18 @@ const addLoggingToDispatch = (store) => {
   }
 }
 
+const addPromiseSupportToDispatch = (store) => {
+  const rawDispatch = store.dispatch
+  return (action) => {
+    if (typeof action.then === 'function') {
+      return action.then(rawDispatch)
+    } else {
+      return rawDispatch(action)
+    }
+  }
+}
+
 const store = createStore(rootReducer)
 store.dispatch = addLoggingToDispatch(store)
+store.dispatch = addPromiseSupportToDispatch(store)
 export default store
